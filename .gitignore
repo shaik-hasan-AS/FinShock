@@ -21,18 +21,31 @@ venv/
 ENV/
 env/
 
-# Testing & Cache
+# Testing & Quality
+tests/
+.tests/
 .pytest_cache/
 .coverage
 htmlcov/
 *.log
 
-# AWS SAM & Cloud
+# Agents & Workspace Rules
+.agents/
+.agent/
+AGENTS.md
+
+# Internal Planning & Spec Docs
+FinShock_Quant_Idea_and_Basic_Plan.md
+
+# AWS SAM & Cloud Local Artifacts
 .aws-sam/
 
-# Local Data & Reports
-data/local_experiments/
-data/tearsheets/
+# Local Data, Reports & Temp
+data/
+scratch/
+*.tmp
+*.temp
+*.bak
 
 # OS & Editor
 .DS_Store
@@ -41,3 +54,4 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
