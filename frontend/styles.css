@@ -1227,3 +1227,58 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .heat-pos-med  { background: rgba(239, 68, 68, 0.25); color: #fca5a5; }
 .heat-pos-high { background: rgba(239, 68, 68, 0.45); color: #f87171; font-weight: 700; }
 
+/* Live Ticker Pulse Dot */
+.live-pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  margin-right: 6px;
+  box-shadow: 0 0 6px #10b981;
+  animation: pulseGreen 2s infinite ease-in-out;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.sc-badge-custom {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  margin-bottom: 0.35rem;
+}
+
+.custom-scenario-save-box {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+}
+
+.input-scenario-name {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8rem;
+  flex: 1;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input-scenario-name:focus {
+  border-color: var(--accent-cyan);
+}
+
+

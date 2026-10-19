@@ -97,10 +97,32 @@ async function init() {
   await triggerEfficientFrontier();
 }
 
-// Market Pulse Ticker Tape
+// Market Pulse Live Ticker Tape
+async function updateLiveMarketTicker() {
+  try {
+    const res = await fetch(`${API_BASE}/api/market-pulse`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.tickers && data.tickers.length > 0) {
+      const container = document.getElementById('tickerItemsContainer');
+      if (!container) return;
+      container.innerHTML = data.tickers.map(t => `
+        <div class="ticker-item">
+          <span class="sym">${t.sym}</span>
+          <span class="price">${t.price}</span>
+          <span class="chg ${t.dir}">${t.chg}</span>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.warn('Failed to refresh live market ticker:', err);
+  }
+}
+
 function initMarketTicker() {
   const container = document.getElementById('tickerItemsContainer');
   if (!container) return;
+  // Immediate paint with cached/baseline symbols
   container.innerHTML = TICKER_DATA.map(t => `
     <div class="ticker-item">
       <span class="sym">${t.sym}</span>
@@ -108,6 +130,10 @@ function initMarketTicker() {
       <span class="chg ${t.dir}">${t.chg}</span>
     </div>
   `).join('');
+  
+  // Fetch real-time live market quotes and poll every 60s
+  updateLiveMarketTicker();
+  setInterval(updateLiveMarketTicker, 60000);
 }
 
 // Check AWS Connection Status & Load 10-Service Architecture
@@ -256,7 +282,9 @@ function renderScenariosGrid() {
     const card = document.createElement('div');
     card.className = `scenario-card ${scId === STATE.activeScenarioId ? 'active' : ''}`;
     card.dataset.scid = scId;
+    const isCustom = sc.is_custom || scId.startsWith('custom_');
     card.innerHTML = `
+      ${isCustom ? '<span class="sc-badge-custom">Custom Stress Test</span>' : ''}
       <div class="sc-title">${sc.name}</div>
       <div class="sc-desc">${sc.description}</div>
     `;
@@ -311,6 +339,42 @@ function setupCustomShockControls() {
       triggerShock(true);
     });
   }
+
+  const saveBtn = document.getElementById('saveCustomScenarioBtn');
+  const nameInput = document.getElementById('customScenarioNameInput');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      const name = (nameInput && nameInput.value.trim()) || `Custom Stress Test #${Object.keys(STATE.scenarios).length + 1}`;
+      const payload = {
+        name: name,
+        description: `User-defined macro shock scenario across multi-asset universe`,
+        shocks: { ...STATE.customShocks },
+      };
+      try {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+        const res = await fetch(`${API_BASE}/api/scenarios`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const newSc = data.scenario;
+          STATE.scenarios[newSc.id] = newSc;
+          STATE.activeScenarioId = newSc.id;
+          renderScenariosGrid();
+          triggerShock();
+          if (nameInput) nameInput.value = '';
+        }
+      } catch (err) {
+        console.error('Failed to save custom scenario:', err);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Save Scenario';
+      }
+    });
+  }
 }
 
 function renderCustomShockSliders() {
@@ -362,10 +426,16 @@ async function triggerAnalysis() {
     document.getElementById('metricExpReturn').textContent = formatPercent(data.expected_return * 100);
     document.getElementById('metricVolatility').textContent = formatPercent(data.volatility * 100);
     document.getElementById('metricSharpe').textContent = data.sharpe_ratio.toFixed(2);
-    document.getElementById('metricVaR').textContent = formatPercent(data.var_95_percent);
-    document.getElementById('metricVaRAmount').textContent = `Max loss: ${formatINR(data.var_95_amount)}`;
-    document.getElementById('metricCVaR').textContent = formatPercent(data.cvar_95_percent);
-    document.getElementById('metricCVaRAmount').textContent = `Tail loss: ${formatINR(data.cvar_95_amount)}`;
+    const histVarPct = data.hist_var_95_percent !== undefined ? data.hist_var_95_percent : data.var_95_percent;
+    const histVarAmt = data.hist_var_95_amount !== undefined ? data.hist_var_95_amount : data.var_95_amount;
+    const histCVarPct = data.hist_cvar_95_percent !== undefined ? data.hist_cvar_95_percent : data.cvar_95_percent;
+    const histCVarAmt = data.hist_cvar_95_amount !== undefined ? data.hist_cvar_95_amount : data.cvar_95_amount;
+
+    document.getElementById('metricVaR').innerHTML = `${formatPercent(data.var_95_percent)} <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 500;">(Hist: ${formatPercent(histVarPct)})</span>`;
+    document.getElementById('metricVaRAmount').innerHTML = `Parametric: ${formatINR(data.var_95_amount)} · <span style="color: #cbd5e1;">Hist Fat-Tail: ${formatINR(histVarAmt)}</span>`;
+
+    document.getElementById('metricCVaR').innerHTML = `${formatPercent(data.cvar_95_percent)} <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 500;">(Hist: ${formatPercent(histCVarPct)})</span>`;
+    document.getElementById('metricCVaRAmount').innerHTML = `Parametric: ${formatINR(data.cvar_95_amount)} · <span style="color: #cbd5e1;">Hist Fat-Tail: ${formatINR(histCVarAmt)}</span>`;
   } catch (err) {
     console.error('Error calculating metrics', err);
   }

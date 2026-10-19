@@ -24,7 +24,8 @@ from backend.core.assets import (
     DEFAULT_CAPITAL,
     RISK_FREE_RATE,
 )
-from backend.core.scenarios import SCENARIOS
+from backend.core.scenarios import SCENARIOS, add_custom_scenario
+from backend.services.market_data import get_live_market_data
 from backend.core.quant import (
     normalize_weights,
     calculate_portfolio_metrics,
@@ -83,6 +84,9 @@ def route_request(method: str, path: str, body: Optional[dict] = None) -> Tuple[
         elif path == "/api/scenarios":
             return 200, {"scenarios": SCENARIOS}
             
+        elif path == "/api/market-pulse":
+            return 200, get_live_market_data()
+            
         elif path == "/api/experiments":
             experiments = list_experiments()
             return 200, {"experiments": experiments, "count": len(experiments)}
@@ -90,7 +94,11 @@ def route_request(method: str, path: str, body: Optional[dict] = None) -> Tuple[
     elif method == "POST":
         payload = body or {}
         
-        if path == "/api/analyze":
+        if path == "/api/scenarios":
+            scenario = add_custom_scenario(payload)
+            return 201, {"scenario": scenario, "scenarios": SCENARIOS}
+            
+        elif path == "/api/analyze":
             capital = float(payload.get("capital", DEFAULT_CAPITAL))
             weights = payload.get("weights", {aid: DEFAULT_ASSETS[aid]["default_weight"] for aid in ASSET_ORDER})
             rf_rate = get_risk_free_rate_from_ssm(RISK_FREE_RATE)

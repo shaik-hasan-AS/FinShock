@@ -1,0 +1,110 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "FinShockDynamoDB",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:CreateTable",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Scan",
+        "dynamodb:Query"
+      ],
+      "Resource": "arn:aws:dynamodb:ap-south-1:900889879907:table/finshock_experiments*"
+    },
+    {
+      "Sid": "FinShockS3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::finshock-reports*",
+        "arn:aws:s3:::finshock-reports*/*"
+      ]
+    },
+    {
+      "Sid": "FinShockSNS",
+      "Effect": "Allow",
+      "Action": [
+        "sns:CreateTopic",
+        "sns:GetTopicAttributes",
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:ListTopics"
+      ],
+      "Resource": "arn:aws:sns:ap-south-1:900889879907:finshock-risk-alerts*"
+    },
+    {
+      "Sid": "FinShockSQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:CreateQueue",
+        "sqs:GetQueueUrl",
+        "sqs:GetQueueAttributes",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:ListQueues"
+      ],
+      "Resource": "arn:aws:sqs:ap-south-1:900889879907:finshock-simulation-queue*"
+    },
+    {
+      "Sid": "FinShockSSM",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:PutParameter",
+        "ssm:DescribeParameters"
+      ],
+      "Resource": "arn:aws:ssm:ap-south-1:900889879907:parameter/finshock/config/*"
+    },
+    {
+      "Sid": "FinShockCloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData",
+        "cloudwatch:GetMetricData",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:PutMetricAlarm"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FinShockEventBridge",
+      "Effect": "Allow",
+      "Action": [
+        "events:PutRule",
+        "events:DescribeRule",
+        "events:PutTargets",
+        "events:RemoveTargets"
+      ],
+      "Resource": "arn:aws:events:ap-south-1:900889879907:rule/finshock-*"
+    },
+    {
+      "Sid": "FinShockLambdaAndCloudFormation",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:GetFunction",
+        "lambda:InvokeFunction",
+        "apigateway:*",
+        "cloudformation:*",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

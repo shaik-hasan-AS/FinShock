@@ -94,3 +94,37 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
         },
     },
 }
+
+
+def get_all_scenarios() -> Dict[str, Dict[str, Any]]:
+    """Return all active scenarios, including standard macro and custom user scenarios."""
+    return SCENARIOS
+
+
+def add_custom_scenario(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Register a bespoke user-defined macro shock scenario."""
+    name = (data.get("name") or "Custom Macro Shock").strip()
+    raw_id = data.get("id") or ("custom_" + name.lower().replace(" ", "_").replace("-", "_")[:24])
+    # Sanitize id
+    sc_id = "".join(c for c in raw_id if c.isalnum() or c == "_") or "custom_scenario"
+    description = (data.get("description") or f"Custom stress test scenario: {name}").strip()
+    
+    # Clean shocks
+    raw_shocks = data.get("shocks", {})
+    clean_shocks: Dict[str, float] = {}
+    for aid, val in raw_shocks.items():
+        try:
+            clean_shocks[aid] = float(val)
+        except (ValueError, TypeError):
+            clean_shocks[aid] = 0.0
+
+    scenario = {
+        "id": sc_id,
+        "name": name,
+        "description": description,
+        "shocks": clean_shocks,
+        "is_custom": True,
+    }
+    SCENARIOS[sc_id] = scenario
+    return scenario
+

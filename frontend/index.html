@@ -70,7 +70,7 @@
 
   <!-- Live Market Ticker Ribbon -->
   <div class="market-ticker-ribbon" id="marketTickerRibbon">
-    <div class="ticker-badge">MARKET PULSE</div>
+    <div class="ticker-badge"><span class="live-pulse-dot"></span>MARKET PULSE</div>
     <div class="ticker-scroll" id="tickerItemsContainer">
       <!-- Populated by JS -->
     </div>
@@ -276,7 +276,11 @@
               <div class="custom-shock-grid" id="customShockGrid">
                 <!-- Sliders populated dynamically by JS -->
               </div>
-              <div class="custom-shock-actions">
+              <div class="custom-shock-actions" style="flex-wrap: wrap;">
+                <div class="custom-scenario-save-box">
+                  <input type="text" id="customScenarioNameInput" placeholder="Save as scenario (e.g. 2026 Tech Crash)..." class="input-scenario-name" />
+                  <button id="saveCustomScenarioBtn" class="btn btn-secondary" style="font-size: 0.78rem; white-space: nowrap;">💾 Save Scenario</button>
+                </div>
                 <button id="resetCustomShockBtn" class="btn btn-secondary">Reset to 0%</button>
                 <button id="applyCustomShockBtn" class="btn btn-primary">Run Custom Stress Test</button>
               </div>

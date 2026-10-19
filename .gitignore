@@ -1,9 +1,28 @@
 # Environment & Secrets (NEVER COMMIT)
 .env
 .env.*
+.env*.local
 !.env.example
 *.pem
 *.key
+*.pkcs12
+*.pfx
+*.p12
+*.cer
+*.crt
+*.der
+id_rsa*
+id_ed25519*
+id_ecdsa*
+id_dsa*
+credentials.json
+client_secret*.json
+*accessKeys*.csv
+*credentials*.csv
+*.secret
+*.secrets
+secrets/
+.secrets/
 
 # Python
 __pycache__/

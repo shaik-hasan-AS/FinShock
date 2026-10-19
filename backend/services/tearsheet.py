@@ -174,14 +174,14 @@ def generate_executive_tearsheet(
       <div class="kpi-sub">vs 6.5% G-Sec</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">1-Yr 95% VaR</div>
-      <div class="kpi-val" style="color: #c53030;">{metrics.get('var_95_percent', 0):.1f}%</div>
-      <div class="kpi-sub">₹{metrics.get('var_95_amount', 0):,.0f}</div>
+      <div class="kpi-label">1-Yr 95% VaR (Norm/Hist)</div>
+      <div class="kpi-val" style="color: #c53030;">{metrics.get('var_95_percent', 0):.1f}% / {metrics.get('hist_var_95_percent', metrics.get('var_95_percent', 0)):.1f}%</div>
+      <div class="kpi-sub">Parametric: ₹{metrics.get('var_95_amount', 0):,.0f} | Hist: ₹{metrics.get('hist_var_95_amount', metrics.get('var_95_amount', 0)):,.0f}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">95% CVaR (Tail)</div>
-      <div class="kpi-val" style="color: #c53030;">{metrics.get('cvar_95_percent', 0):.1f}%</div>
-      <div class="kpi-sub">₹{metrics.get('cvar_95_amount', 0):,.0f}</div>
+      <div class="kpi-label">95% CVaR (Norm/Hist)</div>
+      <div class="kpi-val" style="color: #c53030;">{metrics.get('cvar_95_percent', 0):.1f}% / {metrics.get('hist_cvar_95_percent', metrics.get('cvar_95_percent', 0)):.1f}%</div>
+      <div class="kpi-sub">Parametric: ₹{metrics.get('cvar_95_amount', 0):,.0f} | Hist: ₹{metrics.get('hist_cvar_95_amount', metrics.get('cvar_95_amount', 0)):,.0f}</div>
     </div>
   </div>
 
