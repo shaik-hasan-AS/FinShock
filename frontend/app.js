@@ -1,6 +1,9 @@
 // FinShock Quant Lab — Institutional Quantitative Terminal Frontend Controller
 
-const API_BASE = window.location.origin;
+const AWS_API_GATEWAY_URL = 'https://ig4f3mvsgb.execute-api.ap-south-1.amazonaws.com';
+const API_BASE = (window.location.origin.startsWith('http') && window.location.port === '8000') 
+  ? window.location.origin 
+  : (window.FINSHOCK_API_BASE || AWS_API_GATEWAY_URL);
 
 const STATE = {
   capital: 1000000,

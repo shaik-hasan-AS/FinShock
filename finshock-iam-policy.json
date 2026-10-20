@@ -95,14 +95,17 @@
       "Sid": "FinShockLambdaAndCloudFormation",
       "Effect": "Allow",
       "Action": [
-        "lambda:CreateFunction",
-        "lambda:UpdateFunctionCode",
-        "lambda:UpdateFunctionConfiguration",
-        "lambda:GetFunction",
-        "lambda:InvokeFunction",
+        "lambda:*",
         "apigateway:*",
         "cloudformation:*",
-        "iam:PassRole"
+        "iam:PassRole",
+        "iam:CreateRole",
+        "iam:GetRole",
+        "iam:AttachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:DeleteRole",
+        "iam:DeleteRolePolicy"
       ],
       "Resource": "*"
     }
